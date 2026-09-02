@@ -1,0 +1,41 @@
+# Environment variables and secrets
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+dist/
+
+# Logs and generated reports
+*.log
+frontend/build_err.txt
+frontend/build_report.txt
+frontend/eslint_report*.txt
+frontend/prettier_out.txt
+
+# Temporary files
+
+# Temporary Git metadata backup
+frontend_git_backup/
+
+# Generated ML training artifacts
+data/processed/X_*.npy
+data/processed/y_*.npy
+data/processed/eval_*.csv

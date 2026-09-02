@@ -1,0 +1,62 @@
+{
+    "onion": {
+        "crop": "onion",
+        "evaluation_method": "chronological_rolling_one_step",
+        "sequence_length": 30,
+        "total_rows": 60,
+        "evaluation_samples": 30,
+        "date_start": "2026-02-05",
+        "date_end": "2026-03-06",
+        "mae": 76.8804,
+        "rmse": 87.9969,
+        "mape": 3.7022
+    },
+    "tomato": {
+        "crop": "tomato",
+        "evaluation_method": "chronological_rolling_one_step",
+        "sequence_length": 30,
+        "total_rows": 60,
+        "evaluation_samples": 30,
+        "date_start": "2026-02-05",
+        "date_end": "2026-03-06",
+        "mae": 124.191,
+        "rmse": 144.7942,
+        "mape": 6.7061
+    },
+    "potato": {
+        "crop": "potato",
+        "evaluation_method": "chronological_rolling_one_step",
+        "sequence_length": 30,
+        "total_rows": 60,
+        "evaluation_samples": 30,
+        "date_start": "2026-02-05",
+        "date_end": "2026-03-06",
+        "mae": 312.8045,
+        "rmse": 345.4223,
+        "mape": 20.9172
+    },
+    "rice": {
+        "crop": "rice",
+        "evaluation_method": "chronological_rolling_one_step",
+        "sequence_length": 30,
+        "total_rows": 60,
+        "evaluation_samples": 30,
+        "date_start": "2026-02-05",
+        "date_end": "2026-03-06",
+        "mae": 180.7268,
+        "rmse": 202.9918,
+        "mape": 4.5496
+    },
+    "wheat": {
+        "crop": "wheat",
+        "evaluation_method": "chronological_rolling_one_step",
+        "sequence_length": 30,
+        "total_rows": 60,
+        "evaluation_samples": 30,
+        "date_start": "2026-02-05",
+        "date_end": "2026-03-06",
+        "mae": 95.8585,
+        "rmse": 108.9314,
+        "mape": 3.8867
+    }
+}
