@@ -69,7 +69,13 @@ class NewsService:
     def __init__(self):
         self.news_api_key    = os.getenv("NEWS_API_KEY", "")
         self.anthropic_key   = os.getenv("ANTHROPIC_API_KEY", "")
-        self.use_distilbert  = self._try_load_distilbert()
+        self.use_distilbert = os.getenv(
+            "USE_DISTILBERT",
+            "false"
+        ).lower() == "true"
+
+        if self.use_distilbert:
+            self.use_distilbert = self._try_load_distilbert()
 
     def _try_load_distilbert(self) -> bool:
         """Try to load DistilBERT sentiment pipeline."""
@@ -109,7 +115,7 @@ class NewsService:
 
         # Step 2: Score sentiment
         if self.use_distilbert:
-            result = self._score_distilbert(headlines)
+            result = self._score_distilbert(crop, headlines)
             source = "NewsAPI + DistilBERT"
         elif self.anthropic_key:
             result = self._score_claude(crop, headlines)
@@ -159,7 +165,7 @@ class NewsService:
     # DISTILBERT SENTIMENT (primary ML method)
     # ──────────────────────────────────────────────────────────────────────────
 
-    def _score_distilbert(self, headlines: list) -> dict:
+    def _score_distilbert(self, crop: str, headlines: list) -> dict:
         """
         Runs each headline through DistilBERT.
         Aggregates scores → maps to crop price sentiment.

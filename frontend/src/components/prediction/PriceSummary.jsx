@@ -3,17 +3,110 @@ import Gauge from "../charts/Gauge";
 
 export default function PriceSummary({ cdata, days }) {
 
-  const isHold = cdata.adv === "HOLD";
+  // --------------------------------------------------
+  // ADVISORY NORMALIZATION
+  // Backend currently returns WAIT / SELL / HOLD
+  // --------------------------------------------------
 
-  const basePrice = Number(cdata.base).toFixed(2);
-  const predPrice = Number(cdata.pred).toFixed(2);
-  const pctChange = Number(Math.abs(cdata.pct)).toFixed(2);
+  const advisory = String(cdata.adv || "WAIT").toUpperCase();
+
+  const isWait =
+    advisory === "WAIT" ||
+    advisory === "HOLD";
+
+  const isSell = advisory === "SELL";
+
+
+  // --------------------------------------------------
+  // PRICE VALUES
+  // --------------------------------------------------
+
+  const basePrice = Number(cdata.base || 0).toFixed(2);
+
+  const predPrice = Number(cdata.pred || 0).toFixed(2);
+
+  const pctValue = Number(cdata.pct || 0);
+
+  const pctChange = Math.abs(pctValue).toFixed(2);
+
+
+  // --------------------------------------------------
+  // CONFIDENCE / MAPE
+  // --------------------------------------------------
+
+  const confidence = Number(cdata.conf || 0);
+
+  const realMape = cdata.mape;
+
+  const mapeDisplay =
+    realMape !== null &&
+    realMape !== undefined
+      ? Number(realMape).toFixed(1)
+      : Math.round(
+          ((100 - confidence) / 10) * 2.5
+        );
+
+
+  // --------------------------------------------------
+  // ADVISORY TEXT
+  // --------------------------------------------------
+
+  const advisorAction =
+    isSell
+      ? "↓ SELL"
+      : isWait
+      ? "↔ WAIT"
+      : "↑ HOLD";
+
+
+  const advisorDescription =
+    isSell
+      ? "Price drop expected · Consider selling soon"
+      : pctValue > 0
+      ? `+${pctChange}% expected over ${days} days`
+      : "Prices relatively stable · Monitor market";
+
+
+  // --------------------------------------------------
+  // ADVISORY CARD COLORS
+  // --------------------------------------------------
+
+  const advisorBackground =
+    isSell
+      ? `linear-gradient(135deg,#700,${G.red})`
+      : `linear-gradient(135deg,${G.deep},${G.green})`;
+
+
+  const advisorShadow =
+    isSell
+      ? "0 6px 22px rgba(192,57,43,0.26)"
+      : "0 6px 22px rgba(27,107,53,0.26)";
+
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1.1fr", gap: 11 }}>
 
-      {/* Current Price */}
-      <div style={{ ...cardStyle({ padding: "16px 18px", position: "relative", overflow: "hidden" }) }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr 1.1fr",
+        gap: 11
+      }}
+    >
+
+
+      {/* ==================================================
+          CURRENT PRICE
+      ================================================== */}
+
+      <div
+        style={{
+          ...cardStyle({
+            padding: "16px 18px",
+            position: "relative",
+            overflow: "hidden"
+          })
+        }}
+      >
 
         <div
           style={{
@@ -39,6 +132,7 @@ export default function PriceSummary({ cdata, days }) {
           💰 Current Price
         </div>
 
+
         <div
           style={{
             fontFamily: "'Playfair Display',serif",
@@ -49,33 +143,49 @@ export default function PriceSummary({ cdata, days }) {
           }}
         >
           ₹{basePrice}
+
           <span
             style={{
-              fontSize: 15,
+              fontSize: 14,
               color: G.muted,
               fontFamily: "'Mukta',sans-serif",
               fontWeight: 600
             }}
           >
-            /kg
+            /Q
           </span>
+
         </div>
+
 
         <div
           style={{
-            fontSize: 13,
+            fontSize: 12,
             color: G.muted,
-            marginTop: 5,
+            marginTop: 7,
             fontWeight: 600
           }}
         >
-          ₹{Math.round(cdata.base * 100)}/Q · Agmarknet
+          Agmarknet mandi price
         </div>
 
       </div>
 
-      {/* Predicted Price */}
-      <div style={{ ...cardStyle({ padding: "16px 18px", position: "relative", overflow: "hidden" }) }}>
+
+
+      {/* ==================================================
+          PREDICTED PRICE
+      ================================================== */}
+
+      <div
+        style={{
+          ...cardStyle({
+            padding: "16px 18px",
+            position: "relative",
+            overflow: "hidden"
+          })
+        }}
+      >
 
         <div
           style={{
@@ -84,9 +194,11 @@ export default function PriceSummary({ cdata, days }) {
             left: 0,
             right: 0,
             height: 3,
-            background: `linear-gradient(90deg,${G.green},#2D9E58)`
+            background:
+              `linear-gradient(90deg,${G.green},#2D9E58)`
           }}
         />
+
 
         <div
           style={{
@@ -101,6 +213,7 @@ export default function PriceSummary({ cdata, days }) {
           🔮 Predicted D{days}
         </div>
 
+
         <div
           style={{
             fontFamily: "'Playfair Display',serif",
@@ -111,32 +224,51 @@ export default function PriceSummary({ cdata, days }) {
           }}
         >
           ₹{predPrice}
+
           <span
             style={{
-              fontSize: 15,
+              fontSize: 14,
               color: G.muted,
               fontFamily: "'Mukta',sans-serif",
               fontWeight: 600
             }}
           >
-            /kg
+            /Q
           </span>
+
         </div>
+
 
         <div
           style={{
             fontSize: 13,
             fontWeight: 700,
-            color: cdata.pct > 0 ? G.green : G.red,
-            marginTop: 5
+            color:
+              pctValue > 0
+                ? G.green
+                : pctValue < 0
+                ? G.red
+                : G.muted,
+            marginTop: 7
           }}
         >
-          {cdata.pct > 0 ? "▲" : "▼"}{pctChange}% · LSTM
+          {pctValue > 0
+            ? "▲"
+            : pctValue < 0
+            ? "▼"
+            : "●"}
+
+          {pctChange}% · LSTM
         </div>
 
       </div>
 
-      {/* Confidence Gauge */}
+
+
+      {/* ==================================================
+          CONFIDENCE
+      ================================================== */}
+
       <div
         style={{
           ...cardStyle({
@@ -157,15 +289,24 @@ export default function PriceSummary({ cdata, days }) {
             left: 0,
             right: 0,
             height: 3,
-            background: `linear-gradient(90deg,${
-              cdata.conf >= 75 ? G.green : G.amber
-            },#2D9E58)`
+            background:
+              `linear-gradient(
+                90deg,
+                ${confidence >= 75 ? G.green : G.amber},
+                #2D9E58
+              )`
           }}
         />
 
-        <Gauge value={cdata.conf} size={76} />
+
+        <Gauge
+          value={confidence}
+          size={76}
+        />
+
 
         <div>
+
           <div
             style={{
               fontSize: 12,
@@ -179,15 +320,22 @@ export default function PriceSummary({ cdata, days }) {
             🎯 Confidence
           </div>
 
+
           <div
             style={{
               fontSize: 16,
               fontWeight: 700,
-              color: cdata.conf >= 75 ? G.green : G.amber
+              color:
+                confidence >= 75
+                  ? G.green
+                  : G.amber
             }}
           >
-            {cdata.conf >= 75 ? "High" : "Moderate"}
+            {confidence >= 75
+              ? "High"
+              : "Moderate"}
           </div>
+
 
           <div
             style={{
@@ -197,25 +345,27 @@ export default function PriceSummary({ cdata, days }) {
               fontWeight: 600
             }}
           >
-            MAPE ~{Math.round((100 - cdata.conf) / 10 * 2.5)}%
+            MAPE {mapeDisplay}%
           </div>
+
         </div>
 
       </div>
 
-      {/* AI Advisor */}
+
+
+      {/* ==================================================
+          AI ADVISOR
+      ================================================== */}
+
       <div
         style={{
-          background: isHold
-            ? `linear-gradient(135deg,${G.deep},${G.green})`
-            : `linear-gradient(135deg,#700,${G.red})`,
+          background: advisorBackground,
           borderRadius: 16,
           padding: "16px 18px",
           position: "relative",
           overflow: "hidden",
-          boxShadow: isHold
-            ? "0 6px 22px rgba(27,107,53,0.26)"
-            : "0 6px 22px rgba(192,57,43,0.26)"
+          boxShadow: advisorShadow
         }}
       >
 
@@ -231,6 +381,7 @@ export default function PriceSummary({ cdata, days }) {
           }}
         />
 
+
         <div
           style={{
             fontSize: 12,
@@ -244,6 +395,7 @@ export default function PriceSummary({ cdata, days }) {
           🤖 AI Advisor
         </div>
 
+
         <div
           style={{
             fontFamily: "'Playfair Display',serif",
@@ -251,26 +403,26 @@ export default function PriceSummary({ cdata, days }) {
             fontWeight: 700,
             color: "#fff",
             lineHeight: 1,
-            marginBottom: 4
+            marginBottom: 7
           }}
         >
-          {isHold ? "↑ HOLD" : "↓ SELL"}
+          {advisorAction}
         </div>
+
 
         <div
           style={{
-            fontSize: 13,
+            fontSize: 12,
             fontWeight: 600,
             color: "rgba(255,255,255,0.85)",
             lineHeight: 1.5
           }}
         >
-          {isHold
-            ? `+${pctChange}% over ${days}d · Wait D${Math.round(days * 0.75)}`
-            : "Drop likely · Sell in 5 days"}
+          {advisorDescription}
         </div>
 
       </div>
+
     </div>
   );
 }

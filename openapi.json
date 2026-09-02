@@ -1,0 +1,531 @@
+﻿{
+    "openapi":  "3.1.0",
+    "info":  {
+                 "title":  "KrishiMind API",
+                 "description":  "\nKrishiMind â AI Mandi Price Prediction API\n\nEndpoints:\n\n- POST /predict\n- GET /weather/{state}\n- GET /news/{crop}\n- GET /health\n",
+                 "version":  "1.0.0"
+             },
+    "paths":  {
+                  "/predict":  {
+                                   "post":  {
+                                                "tags":  [
+                                                             "Prediction"
+                                                         ],
+                                                "summary":  "Predict Price",
+                                                "operationId":  "predict_price_predict_post",
+                                                "requestBody":  {
+                                                                    "content":  {
+                                                                                    "application/json":  {
+                                                                                                             "schema":  {
+                                                                                                                            "$ref":  "#/components/schemas/PredictRequest"
+                                                                                                                        }
+                                                                                                         }
+                                                                                },
+                                                                    "required":  true
+                                                                },
+                                                "responses":  {
+                                                                  "200":  {
+                                                                              "description":  "Successful Response",
+                                                                              "content":  {
+                                                                                              "application/json; charset=utf-8":  {
+                                                                                                                                      "schema":  {
+                                                                                                                                                     "$ref":  "#/components/schemas/PredictResponse"
+                                                                                                                                                 }
+                                                                                                                                  }
+                                                                                          }
+                                                                          },
+                                                                  "422":  {
+                                                                              "description":  "Validation Error",
+                                                                              "content":  {
+                                                                                              "application/json":  {
+                                                                                                                       "schema":  {
+                                                                                                                                      "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                  }
+                                                                                                                   }
+                                                                                          }
+                                                                          }
+                                                              }
+                                            }
+                               },
+                  "/weather/{state}":  {
+                                           "get":  {
+                                                       "tags":  [
+                                                                    "Weather"
+                                                                ],
+                                                       "summary":  "Get weather for a state",
+                                                       "description":  "Returns weather condition and its impact on crop prices for the given state.\n\n*Conditions:* normal | deficit | excess\n*Impact:* how weather affects supply and prices",
+                                                       "operationId":  "get_weather_weather__state__get",
+                                                       "parameters":  [
+                                                                          {
+                                                                              "name":  "state",
+                                                                              "in":  "path",
+                                                                              "required":  true,
+                                                                              "schema":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "State"
+                                                                                         }
+                                                                          }
+                                                                      ],
+                                                       "responses":  {
+                                                                         "200":  {
+                                                                                     "description":  "Successful Response",
+                                                                                     "content":  {
+                                                                                                     "application/json; charset=utf-8":  {
+                                                                                                                                             "schema":  {
+
+                                                                                                                                                        }
+                                                                                                                                         }
+                                                                                                 }
+                                                                                 },
+                                                                         "422":  {
+                                                                                     "description":  "Validation Error",
+                                                                                     "content":  {
+                                                                                                     "application/json":  {
+                                                                                                                              "schema":  {
+                                                                                                                                             "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                         }
+                                                                                                                          }
+                                                                                                 }
+                                                                                 }
+                                                                     }
+                                                   }
+                                       },
+                  "/news/{crop}":  {
+                                       "get":  {
+                                                   "tags":  [
+                                                                "News \u0026 Sentiment"
+                                                            ],
+                                                   "summary":  "Get news sentiment for a crop",
+                                                   "description":  "Fetches recent headlines for the crop and runs DistilBERT sentiment analysis.\n\n*Returns:*\n- sentiment score: -1.0 (very bearish) to +1.0 (very bullish)\n- label: bullish / bearish / neutral\n- reason: one-line explanation\n- headlines: list of recent news headlines used",
+                                                   "operationId":  "get_news_news__crop__get",
+                                                   "parameters":  [
+                                                                      {
+                                                                          "name":  "crop",
+                                                                          "in":  "path",
+                                                                          "required":  true,
+                                                                          "schema":  {
+                                                                                         "type":  "string",
+                                                                                         "title":  "Crop"
+                                                                                     }
+                                                                      }
+                                                                  ],
+                                                   "responses":  {
+                                                                     "200":  {
+                                                                                 "description":  "Successful Response",
+                                                                                 "content":  {
+                                                                                                 "application/json; charset=utf-8":  {
+                                                                                                                                         "schema":  {
+
+                                                                                                                                                    }
+                                                                                                                                     }
+                                                                                             }
+                                                                             },
+                                                                     "422":  {
+                                                                                 "description":  "Validation Error",
+                                                                                 "content":  {
+                                                                                                 "application/json":  {
+                                                                                                                          "schema":  {
+                                                                                                                                         "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                                     }
+                                                                                                                      }
+                                                                                             }
+                                                                             }
+                                                                 }
+                                               }
+                                   },
+                  "/":  {
+                            "get":  {
+                                        "tags":  [
+                                                     "Root"
+                                                 ],
+                                        "summary":  "Root",
+                                        "operationId":  "root__get",
+                                        "responses":  {
+                                                          "200":  {
+                                                                      "description":  "Successful Response",
+                                                                      "content":  {
+                                                                                      "application/json; charset=utf-8":  {
+                                                                                                                              "schema":  {
+
+                                                                                                                                         }
+                                                                                                                          }
+                                                                                  }
+                                                                  }
+                                                      }
+                                    }
+                        },
+                  "/health":  {
+                                  "get":  {
+                                              "tags":  [
+                                                           "Root"
+                                                       ],
+                                              "summary":  "Health",
+                                              "operationId":  "health_health_get",
+                                              "responses":  {
+                                                                "200":  {
+                                                                            "description":  "Successful Response",
+                                                                            "content":  {
+                                                                                            "application/json; charset=utf-8":  {
+                                                                                                                                    "schema":  {
+
+                                                                                                                                               }
+                                                                                                                                }
+                                                                                        }
+                                                                        }
+                                                            }
+                                          }
+                              }
+              },
+    "components":  {
+                       "schemas":  {
+                                       "DailyForecast":  {
+                                                             "properties":  {
+                                                                                "date":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Date"
+                                                                                         },
+                                                                                "predicted_price":  {
+                                                                                                        "type":  "number",
+                                                                                                        "title":  "Predicted Price"
+                                                                                                    },
+                                                                                "lower_bound":  {
+                                                                                                    "type":  "number",
+                                                                                                    "title":  "Lower Bound"
+                                                                                                },
+                                                                                "upper_bound":  {
+                                                                                                    "type":  "number",
+                                                                                                    "title":  "Upper Bound"
+                                                                                                }
+                                                                            },
+                                                             "type":  "object",
+                                                             "required":  [
+                                                                              "date",
+                                                                              "predicted_price",
+                                                                              "lower_bound",
+                                                                              "upper_bound"
+                                                                          ],
+                                                             "title":  "DailyForecast"
+                                                         },
+                                       "HTTPValidationError":  {
+                                                                   "properties":  {
+                                                                                      "detail":  {
+                                                                                                     "items":  {
+                                                                                                                   "$ref":  "#/components/schemas/ValidationError"
+                                                                                                               },
+                                                                                                     "type":  "array",
+                                                                                                     "title":  "Detail"
+                                                                                                 }
+                                                                                  },
+                                                                   "type":  "object",
+                                                                   "title":  "HTTPValidationError"
+                                                               },
+                                       "PredictRequest":  {
+                                                              "properties":  {
+                                                                                 "crop":  {
+                                                                                              "type":  "string",
+                                                                                              "title":  "Crop",
+                                                                                              "examples":  [
+                                                                                                               "onion"
+                                                                                                           ]
+                                                                                          },
+                                                                                 "market":  {
+                                                                                                "type":  "string",
+                                                                                                "title":  "Market",
+                                                                                                "examples":  [
+                                                                                                                 "Nashik APMC"
+                                                                                                             ]
+                                                                                            },
+                                                                                 "state":  {
+                                                                                               "type":  "string",
+                                                                                               "title":  "State",
+                                                                                               "examples":  [
+                                                                                                                "Maharashtra"
+                                                                                                            ]
+                                                                                           },
+                                                                                 "district":  {
+                                                                                                  "type":  "string",
+                                                                                                  "title":  "District",
+                                                                                                  "examples":  [
+                                                                                                                   "Nashik"
+                                                                                                               ]
+                                                                                              },
+                                                                                 "days_ahead":  {
+                                                                                                    "type":  "integer",
+                                                                                                    "maximum":  30.0,
+                                                                                                    "minimum":  7.0,
+                                                                                                    "title":  "Days Ahead",
+                                                                                                    "examples":  [
+                                                                                                                     14
+                                                                                                                 ]
+                                                                                                },
+                                                                                 "include_sentiment":  {
+                                                                                                           "type":  "boolean",
+                                                                                                           "title":  "Include Sentiment",
+                                                                                                           "default":  true
+                                                                                                       },
+                                                                                 "include_weather":  {
+                                                                                                         "type":  "boolean",
+                                                                                                         "title":  "Include Weather",
+                                                                                                         "default":  true
+                                                                                                     }
+                                                                             },
+                                                              "type":  "object",
+                                                              "required":  [
+                                                                               "crop",
+                                                                               "market",
+                                                                               "state",
+                                                                               "district",
+                                                                               "days_ahead"
+                                                                           ],
+                                                              "title":  "PredictRequest"
+                                                          },
+                                       "PredictResponse":  {
+                                                               "properties":  {
+                                                                                  "crop":  {
+                                                                                               "type":  "string",
+                                                                                               "title":  "Crop"
+                                                                                           },
+                                                                                  "market":  {
+                                                                                                 "type":  "string",
+                                                                                                 "title":  "Market"
+                                                                                             },
+                                                                                  "state":  {
+                                                                                                "type":  "string",
+                                                                                                "title":  "State"
+                                                                                            },
+                                                                                  "district":  {
+                                                                                                   "type":  "string",
+                                                                                                   "title":  "District"
+                                                                                               },
+                                                                                  "prediction_date":  {
+                                                                                                          "type":  "string",
+                                                                                                          "title":  "Prediction Date"
+                                                                                                      },
+                                                                                  "days_ahead":  {
+                                                                                                     "type":  "integer",
+                                                                                                     "title":  "Days Ahead"
+                                                                                                 },
+                                                                                  "current_price_inr":  {
+                                                                                                            "type":  "number",
+                                                                                                            "title":  "Current Price Inr"
+                                                                                                        },
+                                                                                  "raw_lstm_prediction_inr":  {
+                                                                                                                  "type":  "number",
+                                                                                                                  "title":  "Raw Lstm Prediction Inr"
+                                                                                                              },
+                                                                                  "predicted_price_inr":  {
+                                                                                                              "type":  "number",
+                                                                                                              "title":  "Predicted Price Inr"
+                                                                                                          },
+                                                                                  "price_change_pct":  {
+                                                                                                           "type":  "number",
+                                                                                                           "title":  "Price Change Pct"
+                                                                                                       },
+                                                                                  "confidence_score":  {
+                                                                                                           "anyOf":  [
+                                                                                                                         {
+                                                                                                                             "type":  "integer"
+                                                                                                                         },
+                                                                                                                         {
+                                                                                                                             "type":  "null"
+                                                                                                                         }
+                                                                                                                     ],
+                                                                                                           "title":  "Confidence Score"
+                                                                                                       },
+                                                                                  "trend":  {
+                                                                                                "type":  "string",
+                                                                                                "title":  "Trend"
+                                                                                            },
+                                                                                  "trend_emoji":  {
+                                                                                                      "type":  "string",
+                                                                                                      "title":  "Trend Emoji"
+                                                                                                  },
+                                                                                  "mape_score":  {
+                                                                                                     "anyOf":  [
+                                                                                                                   {
+                                                                                                                       "type":  "number"
+                                                                                                                   },
+                                                                                                                   {
+                                                                                                                       "type":  "null"
+                                                                                                                   }
+                                                                                                               ],
+                                                                                                     "title":  "Mape Score"
+                                                                                                 },
+                                                                                  "model_used":  {
+                                                                                                     "type":  "string",
+                                                                                                     "title":  "Model Used"
+                                                                                                 },
+                                                                                  "confidence_interval":  {
+                                                                                                              "additionalProperties":  true,
+                                                                                                              "type":  "object",
+                                                                                                              "title":  "Confidence Interval"
+                                                                                                          },
+                                                                                  "sentiment_score":  {
+                                                                                                          "anyOf":  [
+                                                                                                                        {
+                                                                                                                            "type":  "number"
+                                                                                                                        },
+                                                                                                                        {
+                                                                                                                            "type":  "null"
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                          "title":  "Sentiment Score"
+                                                                                                      },
+                                                                                  "sentiment_label":  {
+                                                                                                          "anyOf":  [
+                                                                                                                        {
+                                                                                                                            "type":  "string"
+                                                                                                                        },
+                                                                                                                        {
+                                                                                                                            "type":  "null"
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                          "title":  "Sentiment Label"
+                                                                                                      },
+                                                                                  "sentiment_reason":  {
+                                                                                                           "anyOf":  [
+                                                                                                                         {
+                                                                                                                             "type":  "string"
+                                                                                                                         },
+                                                                                                                         {
+                                                                                                                             "type":  "null"
+                                                                                                                         }
+                                                                                                                     ],
+                                                                                                           "title":  "Sentiment Reason"
+                                                                                                       },
+                                                                                  "weather_condition":  {
+                                                                                                            "anyOf":  [
+                                                                                                                          {
+                                                                                                                              "type":  "string"
+                                                                                                                          },
+                                                                                                                          {
+                                                                                                                              "type":  "null"
+                                                                                                                          }
+                                                                                                                      ],
+                                                                                                            "title":  "Weather Condition"
+                                                                                                        },
+                                                                                  "weather_impact":  {
+                                                                                                         "anyOf":  [
+                                                                                                                       {
+                                                                                                                           "type":  "string"
+                                                                                                                       },
+                                                                                                                       {
+                                                                                                                           "type":  "null"
+                                                                                                                       }
+                                                                                                                   ],
+                                                                                                         "title":  "Weather Impact"
+                                                                                                     },
+                                                                                  "daily_forecast":  {
+                                                                                                         "items":  {
+                                                                                                                       "$ref":  "#/components/schemas/DailyForecast"
+                                                                                                                   },
+                                                                                                         "type":  "array",
+                                                                                                         "title":  "Daily Forecast"
+                                                                                                     },
+                                                                                  "advisory_action":  {
+                                                                                                          "type":  "string",
+                                                                                                          "title":  "Advisory Action"
+                                                                                                      },
+                                                                                  "recommendation":  {
+                                                                                                         "type":  "string",
+                                                                                                         "title":  "Recommendation"
+                                                                                                     },
+                                                                                  "warehouse_advisory":  {
+                                                                                                             "anyOf":  [
+                                                                                                                           {
+                                                                                                                               "additionalProperties":  true,
+                                                                                                                               "type":  "object"
+                                                                                                                           },
+                                                                                                                           {
+                                                                                                                               "type":  "null"
+                                                                                                                           }
+                                                                                                                       ],
+                                                                                                             "title":  "Warehouse Advisory"
+                                                                                                         },
+                                                                                  "hindi_summary":  {
+                                                                                                        "type":  "string",
+                                                                                                        "title":  "Hindi Summary"
+                                                                                                    },
+                                                                                  "data_sources":  {
+                                                                                                       "items":  {
+                                                                                                                     "type":  "string"
+                                                                                                                 },
+                                                                                                       "type":  "array",
+                                                                                                       "title":  "Data Sources"
+                                                                                                   }
+                                                                              },
+                                                               "type":  "object",
+                                                               "required":  [
+                                                                                "crop",
+                                                                                "market",
+                                                                                "state",
+                                                                                "district",
+                                                                                "prediction_date",
+                                                                                "days_ahead",
+                                                                                "current_price_inr",
+                                                                                "raw_lstm_prediction_inr",
+                                                                                "predicted_price_inr",
+                                                                                "price_change_pct",
+                                                                                "confidence_score",
+                                                                                "trend",
+                                                                                "trend_emoji",
+                                                                                "mape_score",
+                                                                                "model_used",
+                                                                                "confidence_interval",
+                                                                                "sentiment_score",
+                                                                                "sentiment_label",
+                                                                                "sentiment_reason",
+                                                                                "weather_condition",
+                                                                                "weather_impact",
+                                                                                "daily_forecast",
+                                                                                "advisory_action",
+                                                                                "recommendation",
+                                                                                "warehouse_advisory",
+                                                                                "hindi_summary",
+                                                                                "data_sources"
+                                                                            ],
+                                                               "title":  "PredictResponse"
+                                                           },
+                                       "ValidationError":  {
+                                                               "properties":  {
+                                                                                  "loc":  {
+                                                                                              "items":  {
+                                                                                                            "anyOf":  [
+                                                                                                                          {
+                                                                                                                              "type":  "string"
+                                                                                                                          },
+                                                                                                                          {
+                                                                                                                              "type":  "integer"
+                                                                                                                          }
+                                                                                                                      ]
+                                                                                                        },
+                                                                                              "type":  "array",
+                                                                                              "title":  "Location"
+                                                                                          },
+                                                                                  "msg":  {
+                                                                                              "type":  "string",
+                                                                                              "title":  "Message"
+                                                                                          },
+                                                                                  "type":  {
+                                                                                               "type":  "string",
+                                                                                               "title":  "Error Type"
+                                                                                           },
+                                                                                  "input":  {
+                                                                                                "title":  "Input"
+                                                                                            },
+                                                                                  "ctx":  {
+                                                                                              "type":  "object",
+                                                                                              "title":  "Context"
+                                                                                          }
+                                                                              },
+                                                               "type":  "object",
+                                                               "required":  [
+                                                                                "loc",
+                                                                                "msg",
+                                                                                "type"
+                                                                            ],
+                                                               "title":  "ValidationError"
+                                                           }
+                                   }
+                   }
+}

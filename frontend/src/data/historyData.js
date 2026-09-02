@@ -1,4 +1,4 @@
-export const HISTORY_ITEMS = [
+export const historyItems = [
   { id:1, date:"Mar 5",  crop:"🧅 Onion",  cropId:"onion",  mandi:"Lasalgaon APMC", days:21, predicted:"₹26.5/kg", actual:"₹25.8/kg", accuracy:97, adv:"HOLD", status:"active"    },
   { id:2, date:"Feb 28", crop:"🍅 Tomato", cropId:"tomato", mandi:"Kolar APMC",     days:14, predicted:"₹14.2/kg", actual:"₹13.9/kg", accuracy:98, adv:"SELL", status:"completed" },
   { id:3, date:"Feb 22", crop:"🧅 Onion",  cropId:"onion",  mandi:"Nashik APMC",    days:30, predicted:"₹24.1/kg", actual:"₹22.6/kg", accuracy:94, adv:"HOLD", status:"completed" },

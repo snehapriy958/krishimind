@@ -1,11 +1,11 @@
 """
-KrishiMind Backend — main.py
+KrishiMind Backend API
 
-Run from the project root:
+Run locally from project root:
 
     python -m uvicorn backend.main:app --host 127.0.0.1 --port 8002
 
-Development mode:
+Development:
 
     python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8002
 """
@@ -13,9 +13,14 @@ Development mode:
 import os
 import sys
 
+from dotenv import load_dotenv
+
+load_dotenv()
+from contextlib import asynccontextmanager
+
 
 # ==================================================
-# ENSURE PROJECT ROOT IS IN PYTHON PATH
+# PROJECT PATH
 # ==================================================
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,8 +28,6 @@ ROOT_DIR = os.path.dirname(BACKEND_DIR)
 
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
-
-print(f"main.py ROOT_DIR = {ROOT_DIR}")
 
 
 # ==================================================
@@ -39,7 +42,7 @@ from backend.routers import predict, weather, news
 
 
 # ==================================================
-# CUSTOM UTF-8 JSON RESPONSE
+# UTF-8 JSON RESPONSE
 # ==================================================
 
 class UTF8JSONResponse(JSONResponse):
@@ -47,33 +50,69 @@ class UTF8JSONResponse(JSONResponse):
 
 
 # ==================================================
-# APP INITIALIZATION
+# APPLICATION LIFESPAN
+# ==================================================
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Application startup/shutdown lifecycle.
+
+    Kept lightweight so deployment health checks do not
+    fail because of optional model-loading issues.
+    """
+
+    print("KrishiMind API starting...")
+
+    yield
+
+    print("KrishiMind API shutting down...")
+
+
+# ==================================================
+# FASTAPI APPLICATION
 # ==================================================
 
 app = FastAPI(
     title="KrishiMind API",
     description="""
-KrishiMind — AI Mandi Price Prediction API
+KrishiMind — AI-powered Agricultural Mandi Price Prediction API.
 
-Endpoints:
-
-- POST /predict
-- GET /weather/{state}
-- GET /news/{crop}
-- GET /health
+Features:
+- LSTM-based crop price forecasting
+- Multi-day forecasts
+- Confidence intervals
+- Market sentiment context
+- Weather impact context
+- Farmer selling advisory
 """,
     version="1.0.0",
     default_response_class=UTF8JSONResponse,
+    lifespan=lifespan,
 )
 
 
 # ==================================================
 # CORS
 # ==================================================
+#
+# For deployment, allow all origins temporarily.
+#
+# Later, after frontend deployment, replace "*"
+# with your exact frontend domain.
+#
+# ==================================================
+# CORS
+# ==================================================
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -111,14 +150,15 @@ app.include_router(
 def root():
 
     return {
+        "status": "online",
         "app": "KrishiMind API",
         "version": "1.0.0",
         "docs": "/docs",
+        "health": "/health",
         "endpoints": {
             "predict": "POST /predict",
             "weather": "GET /weather/{state}",
             "news": "GET /news/{crop}",
-            "health": "GET /health",
         },
     }
 
@@ -132,11 +172,16 @@ def root():
     tags=["Root"],
 )
 def health():
+    """
+    Lightweight deployment health check.
 
-    from ml.predict_prices import MODELS
+    Does not force model loading.
+    This prevents the hosting platform from marking the
+    service unhealthy because an ML model is still loading.
+    """
 
     return {
         "status": "healthy",
-        "models_loaded": list(MODELS.keys()),
-        "total_models": len(MODELS),
+        "service": "KrishiMind API",
+        "version": "1.0.0",
     }
