@@ -112,6 +112,9 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:4173",
         "http://127.0.0.1:4173",
+
+        "https://krishimind-seven.vercel.app",
+        "https://krishimind-a6vdezac4-snehapriy958-6546s-projects.vercel.app",
     ],
     allow_credentials=False,
     allow_methods=["*"],
